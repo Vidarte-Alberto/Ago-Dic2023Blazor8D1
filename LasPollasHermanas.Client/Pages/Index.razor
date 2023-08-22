@@ -1,0 +1,41 @@
+﻿@page "/"
+@using Models;
+<h1>Las Pollas Hermanas Catalog</h1>
+<table>
+    <thead>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Price</th>
+        <th>Size</th>
+        <th>Expire Date</th>
+        <th>Material</th>
+        <th>Color</th>
+        <th>Stock</th>
+    </thead>
+    <tbody>
+        @foreach (var dildo in dildos)
+        {
+            <tr>
+                <td>@dildo.Id</td>
+                <td>@dildo.Name</td>
+                <td>@dildo.Price</td>
+                <td>@dildo.ExpireDate</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code
+{
+    private Dildo[] dildos = new [] 
+    {
+        new Dildo () 
+        {
+            Id = 1,
+            Name = "Dildo Hulk",
+            Price = 3000M,
+            Size = 45.3M,
+            ExpireDate = new DateTime(2026, 04, 23)
+        }
+    };
+}
