@@ -42,4 +42,9 @@ public static class DildoClient
     {
         return dildos.ToArray();
     }
+
+    public static void AddDildo(Dildo dildo)
+    {
+        dildos.Add(dildo);
+    }
 }
