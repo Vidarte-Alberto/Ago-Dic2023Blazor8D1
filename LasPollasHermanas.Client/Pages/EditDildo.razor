@@ -8,7 +8,9 @@
 
 <div class="row">
     <div class="col-sm-4">
-    <EditForm Model="@dildo" class="mb-5">
+    <EditForm Model="@dildo" class="mb-5" OnValidSubmit="HandleSubmit">
+        <DataAnnotationsValidator/>
+        <ValidationSummary/>
         <div class="mb-3">
             <label for="name" class="form-label">Name :</label>
             <InputText id="name" @bind-Value="dildo.Name" class="form-control"></InputText>
@@ -27,17 +29,25 @@
         </div>
         <div class="mb-3">
             <label for="material" class="form-label">Material :</label>
-            <InputText id="material" @bind-Value="dildo.Material" class="form-control"></InputText>
+            <InputSelect id="material" @bind-Value="dildo.Material" class="form-select">
+                <option value="default" selected="selected">Selecciona el material</option>
+                <option value="Plastico">Plastico</option>
+                <option value="Metal">Metal</option>
+                <option value="Madera">Madera</option>
+                <option value="Cristal">Cristal</option>
+                <option value="Silicon">Silicon</option>
+            </InputSelect>
         </div>
         <div class="mb-3">
             <label for="color" class="form-label">Color :</label>
             <InputText id="color" @bind-Value="dildo.Color" class="form-control"></InputText>
         </div>
         <div class="mb-3">
-            <label for="stock" class="form-label">Name :</label>
+            <label for="stock" class="form-label">Stock :</label>
             <InputNumber id="stock" @bind-Value="dildo.Stock" class="form-control"></InputNumber>
         </div>
         <button type="Submit" class="btn btn-primary" @onclick="HandleSubmit">Save</button>
+        <button class="btn btn-secondary" @onclick="Cancel">Cancel</button>
     </EditForm>
     </div>
 </div>
@@ -54,6 +64,11 @@
     private void HandleSubmit()
     {
         DildoClient.AddDildo(dildo);
+        NavigationManager.NavigateTo("/");
+    }
+
+    private void Cancel()
+    {
         NavigationManager.NavigateTo("/");
     }
 }

@@ -45,6 +45,7 @@ public static class DildoClient
 
     public static void AddDildo(Dildo dildo)
     {
+        dildo.Id = dildos.Max(dildo => dildo.Id) + 1;
         dildos.Add(dildo);
     }
 }

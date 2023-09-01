@@ -1,6 +1,7 @@
 ﻿@page "/"
 @using Models;
 @using Data;
+@inject NavigationManager NavigationManager
 <h1>Las Pollas Hermanas Catalog</h1>
 <table class="table table-striped table-bordered table-hover">
     <thead class="table-dark">
@@ -33,6 +34,11 @@
         </tbody>
     }
 </table>
+<div class= "row mb-4">
+        <div class ="col-sm-6">
+            <button type="button" class="btn btn-primary" @onclick="CreateDildo">New Dildo</button>
+        </div>
+</div>
 
 @code
 {
@@ -40,5 +46,10 @@
     protected override void OnInitialized()
     {
         dildos = DildoClient.GetDildos();
+    }
+
+    private void CreateDildo()
+    {
+        NavigationManager.NavigateTo("dildo");
     }
 }
