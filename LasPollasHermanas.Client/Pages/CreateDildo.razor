@@ -1,11 +1,10 @@
-﻿@page "/edit/dildo/{dildoId:int}"
+﻿@page "/dildo"
 @using Models
 @using Data
 @inject NavigationManager NavigationManager
-
-<PageTitle>Edit Dildo</PageTitle>
+<PageTitle>New Dildo</PageTitle>
 <h1>Dildo Catalog</h1>
-<h3>Edit Dildo</h3>
+<h3>New Dildo</h3>
 
 <div class="row">
     <div class="col-sm-4">
@@ -60,17 +59,17 @@
 </div>
 
 @code {
-    [Parameter] public int dildoId { get; set; }
-    private Dildo dildo;
-
-    protected override void OnInitialized()
-    {
-        dildo = DildoClient.GetDildoById(dildoId);
-    }
+    private Dildo dildo = new()
+        {
+            Name = string.Empty,
+            Price = 0.0M,
+            Size = 0.0M,
+            ExpireDate = DateTime.UtcNow
+        };
 
     private void HandleSubmit()
     {
-        DildoClient.UpdateDildo(dildo);
+        DildoClient.AddDildo(dildo);
         NavigationManager.NavigateTo("/");
     }
 

@@ -2,17 +2,65 @@
 @using Models;
 @using Data;
 @inject NavigationManager NavigationManager
+
+<style>
+    .active {
+        display: block;
+    }
+
+    .inactive {
+        display: none;
+    }
+
+    .confirmation-dialog {
+        width: 300px;
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 20px;
+        text-align: center;
+    }
+
+    .confirmation-dialog h2 {
+        margin: 0 0 15px;
+    }
+
+    .confirmation-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .confirmation-button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .confirmation-button.cancel {
+        background-color: #ccc;
+    }
+</style>
 <h1>Las Pollas Hermanas Catalog</h1>
 <table class="table table-striped table-bordered table-hover">
     <thead class="table-dark">
-        <th>Id</th>
-        <th>Name</th>
-        <th>Price</th>
-        <th>Size</th>
-        <th>Expire Date</th>
-        <th>Material</th>
-        <th>Color</th>
-        <th>Stock</th>
+        <th style="text-align: center;">Id</th>
+        <th style="text-align: center;">Name</th>
+        <th style="text-align: center;">Price</th>
+        <th style="text-align: center;">Size</th>
+        <th style="text-align: center;">Expire Date</th>
+        <th style="text-align: center;">Material</th>
+        <th style="text-align: center;">Color</th>
+        <th style="text-align: center;">Stock</th>
+        <th style="text-align: center;">Edit</th>
+        <th style="text-align: center;">Remove</th>
     </thead>
     @if (dildos is null)
     {
@@ -24,25 +72,71 @@
             @foreach (var dildo in dildos)
             {
                 <tr>
-                    <td>@dildo.Id</td>
-                    <td>@dildo.Name</td>
-                    <td>@dildo.Price</td>
-                    <td>@dildo.Size</td>
-                    <td>@dildo.ExpireDate</td>
+                    <td style="text-align: center;">@dildo.Id</td>
+                    <td style="text-align: center;">@dildo.Name</td>
+                    <td style="text-align: center;">@dildo.Price</td>
+                    <td style="text-align: center;">@dildo.Size</td>
+                    <td style="text-align: center;">@dildo.ExpireDate</td>
+                    <td style="text-align: center;">@dildo.Material</td>
+                    <td style="text-align: center;">@dildo.Color</td>
+                    <td style="text-align: center;">@dildo.Stock</td>
+                    <td style="text-align: center;">
+                        <img src="@editIcoImageSource" width="75" height="25" @onclick="() => EditDildo(dildo.Id)" />
+                        <div>
+                            Edit
+                        </div>
+                    </td>
+                    <td style=" text-align: center;">
+                        <img src="@removeIcoImageSource" width="75" height="25" @onclick="() => PopUp(dildo.Id)" />
+                        <div>
+                            Remove
+                        </div>
+                    </td>
+                    <div class="@PopupClass">
+                        <div class="confirmation-dialog">
+                            <h2>¿Estás seguro de que deseas eliminar este elemento?</h2>
+                            <div class="confirmation-buttons">
+                                <button class="confirmation-button" @onclick="RemoveDildo">Sí</button>
+                                <button class="confirmation-button cancel" @onclick="PopUp">No</button>
+                            </div>
+                        </div>
+                    </div>
+
+
                 </tr>
             }
         </tbody>
+
     }
 </table>
-<div class= "row mb-4">
-        <div class ="col-sm-6">
-            <button type="button" class="btn btn-primary" @onclick="CreateDildo">New Dildo</button>
-        </div>
+<div class="row mb-4">
+    <div class="col-sm-6">
+        <button type="button" class="btn btn-primary" @onclick="CreateDildo">New Dildo</button>
+    </div>
 </div>
+
+
+
 
 @code
 {
     private Dildo[]? dildos;
+    private bool showDeleteConfirmation = false;
+    private int deleteDildoId;
+    bool conditionPopUp { get; set; } = false;
+
+    string PopupClass => conditionPopUp ? "active" : "inactive";
+    public string ErrorText { get; set; } = "Example of exception";
+    private void PopUp(int dildoId)
+    {
+        this.conditionPopUp = !this.conditionPopUp;
+        deleteDildoId = dildoId;
+    }
+
+    private void PopUp()
+    {
+        this.conditionPopUp = !this.conditionPopUp;
+    }
     protected override void OnInitialized()
     {
         dildos = DildoClient.GetDildos();
@@ -52,4 +146,23 @@
     {
         NavigationManager.NavigateTo("dildo");
     }
+
+
+    private void RemoveDildo()
+    {
+        // Lógica de eliminación
+        DildoClient.RemoveDildo(deleteDildoId);
+        dildos = DildoClient.GetDildos();
+
+        PopUp();
+        StateHasChanged();
+    }
+
+    private void EditDildo(int dildoId)
+    {
+        NavigationManager.NavigateTo($"/edit/dildo/{dildoId}");
+    }
+
+    private string? removeIcoImageSource = $"img/remove.svg";
+    private string? editIcoImageSource = $"img/edit.svg";
 }
