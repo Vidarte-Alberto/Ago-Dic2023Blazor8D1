@@ -48,4 +48,28 @@ public static class DildoClient
         dildo.Id = dildos.Max(dildo => dildo.Id) + 1;
         dildos.Add(dildo);
     }
+
+    public static Dildo GetDildo(int id)
+    {
+        return dildos.Find(dildo => dildo.Id == id) ?? 
+        throw new Exception("Could not find plush");
+    }
+
+    public static void UpdateDildo (Dildo updatedDildo)
+    {
+        Dildo existingDildo = GetDildo(updatedDildo.Id);
+        existingDildo.Name = updatedDildo.Name;
+        existingDildo.Price = updatedDildo.Price;
+        existingDildo.Material = updatedDildo.Material;
+        existingDildo.Size = updatedDildo.Size;
+        existingDildo.ExpireDate = updatedDildo.ExpireDate;
+        existingDildo.Color = updatedDildo.Color;
+        existingDildo.Stock = updatedDildo.Stock;
+    }
+
+    public static void DeleteDildo(int id)
+    {
+        Dildo dildo = GetDildo(id);
+        dildos.Remove(dildo);
+    }
 }
