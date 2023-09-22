@@ -2,6 +2,9 @@ using LasPollasHermanas.Server.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
+var dildoGroup = app.MapGroup("/dildos");
+
+
 List<Dildo> dildos = new ()
     {
         new Dildo () 
@@ -38,7 +41,31 @@ List<Dildo> dildos = new ()
         }
     };
 
+#region Entry Points Dildos
 // EndPoint
 // GET Dildos
-app.MapGet("/dildos", () => dildos);
+dildoGroup.MapGet("/", () => dildos);
+
+// GET/Dildo/{id}
+dildoGroup.MapGet("/{id}", (int id) => 
+{
+    Dildo? dildo = dildos.Find(dildo => 
+    dildo.Id == id);
+    if(dildo is null)
+    {
+        return Results.NotFound();
+    }
+    return Results.Ok(dildo);
+});
+
+// POST/dildos
+dildoGroup.MapPost("/", (Dildo dildo) =>
+{
+    dildo.Id = dildos.Max(dildo => dildo.Id) + 1;
+    dildos.Add(dildo);
+    return Results.CreatedAtRoute("GetDildo", 
+    new {id = dildo.Id}, dildo);
+}).WithName("GetDildo");
+#endregion
+
 app.Run();

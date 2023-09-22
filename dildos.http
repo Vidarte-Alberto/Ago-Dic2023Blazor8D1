@@ -1,0 +1,20 @@
+@baseUrl = http://localhost:5222
+GET {{baseUrl}}/dildos
+
+###
+GET {{baseUrl}}/dildos/3
+
+
+###
+POST {{baseUrl}}/dildos
+content-type: application/json
+
+{
+    "name": "Bicho Pelao",
+    "price": 7000,
+    "size": 23.1,
+    "expireDate": "2030-03-12T00:00:00",
+    "material": null,
+    "color": null,
+    "stock": 0
+}
