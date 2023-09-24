@@ -2,7 +2,7 @@
 GET {{baseUrl}}/dildos
 
 ###
-GET {{baseUrl}}/dildos/3
+GET {{baseUrl}}/dildos/2
 
 
 ###
@@ -10,7 +10,7 @@ POST {{baseUrl}}/dildos
 content-type: application/json
 
 {
-    "name": "Bicho Pelao",
+    "name": "",
     "price": 7000,
     "size": 23.1,
     "expireDate": "2030-03-12T00:00:00",
@@ -18,3 +18,20 @@ content-type: application/json
     "color": null,
     "stock": 0
 }
+
+###
+PUT {{baseUrl}}/dildos/2
+content-type: application/json
+
+{
+  "name": "Dildo De Dev Ops",
+  "price": 8000,
+  "size": 25.1,
+  "expireDate": "2030-04-12T00:00:00",
+  "material": null,
+  "color": null,
+  "stock": 0
+}
+
+###
+DELETE {{baseUrl}}/dildos/2
