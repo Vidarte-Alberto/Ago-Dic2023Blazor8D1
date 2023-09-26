@@ -1,10 +1,5 @@
 using LasPollasHermanas.Server.Models;
 
-var builder = WebApplication.CreateBuilder(args);
-var app = builder.Build();
-var dildoGroup = app.MapGroup("/dildos").WithParameterValidation();
-
-
 List<Dildo> dildos = new ()
     {
         new Dildo () 
@@ -41,6 +36,17 @@ List<Dildo> dildos = new ()
         }
     };
 
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddCors(options => options.AddDefaultPolicy(
+    builder =>
+    {
+    builder.WithOrigins("http://localhost:5289")
+    .AllowAnyHeader()
+    .AllowAnyMethod();
+}));
+var app = builder.Build();
+app.UseCors();
+var dildoGroup = app.MapGroup("/dildos").WithParameterValidation();
 #region Entry Points Dildos
 // EndPoint
 // GET Dildos

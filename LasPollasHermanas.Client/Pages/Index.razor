@@ -80,8 +80,8 @@ else
     {
         if (accepted)
         {
-            await client.DeleteDildoAsync(currentDildo.Id);
-            dildos = await client.GetDildoAsync();
+            await client.DeleteDildoAsync(currentDildo!.Id);
+            dildos = await client.GetDildosAsync();
         }
     }
 }

@@ -3,7 +3,6 @@ using LasPollasHermanas.Client.Models;
 using System.Net.Http.Json;
 public class DildoClient
 {
-
     private readonly HttpClient httpClient;
 
     public DildoClient(HttpClient httpClient)
@@ -13,7 +12,7 @@ public class DildoClient
 
     public async Task<Dildo[]?> GetDildosAsync()
     {
-        return await httpClient.GetFromJsonAsync<Dildo []>("dildos");
+        return await httpClient.GetFromJsonAsync<Dildo[]>("dildos");
     }
 
     public async Task AddDildoAsync(Dildo dildo)
