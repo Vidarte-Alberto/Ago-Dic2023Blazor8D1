@@ -3,6 +3,7 @@
 @using Models
 @using Data
 @inject NavigationManager NavigationManager
+@inject DildoClient client
 <PageTitle>New Dildo</PageTitle>
 <h1>Dildo Catalog</h1>
 <h3>@title</h3>
@@ -65,11 +66,11 @@ else
     public int? Id { get; set; }
     private Dildo? dildo;
     private string title = string.Empty;
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
         if (Id is not null)
         {
-            Dildo foundDildo = DildoClient.GetDildo(Id.Value);
+            Dildo foundDildo = await client.GetDildoAsync(Id.Value);
             dildo = new()
                 {
                     Id = foundDildo.Id,
@@ -99,15 +100,15 @@ else
         }
     }
 
-    private void HandleSubmit()
+    private async Task HandleSubmitAsync()
     {
         if (dildo!.Id == 0)
         {
-            DildoClient.AddDildo(dildo);
+            await client.AddDildoAsync(dildo);
         }
         else
         {
-            DildoClient.UpdateDildo(dildo);
+            await client.UpdateDildoAsync(dildo);
         }
         NavigationManager.NavigateTo("/");
     }

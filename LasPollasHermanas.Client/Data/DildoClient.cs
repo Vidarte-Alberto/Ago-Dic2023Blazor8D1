@@ -1,75 +1,39 @@
 namespace LasPollasHermanas.Client.Data;
 using LasPollasHermanas.Client.Models;
-public static class DildoClient
+using System.Net.Http.Json;
+public class DildoClient
 {
-    private static List<Dildo> dildos = new ()
-    {
-        new Dildo () 
-        {
-            Id = 1,
-            Name = "Dildo Hulk",
-            Price = 3000M,
-            Size = 45.3M,
-            ExpireDate = new DateTime(2026, 04, 23)
-        },
-        new Dildo () 
-        {
-            Id = 2,
-            Name = "Dildo De Amazon",
-            Price = 7000M,
-            Size = 23.1M,
-            ExpireDate = new DateTime(2030, 03, 12)
-        },
-        new Dildo () 
-        {
-            Id = 3,
-            Name = "Dildo Hydra",
-            Price = 1500M,
-            Size = 10.1M,
-            ExpireDate = new DateTime(2027, 06, 10)
-        },
-        new Dildo () 
-        {
-            Id = 4,
-            Name = "Dildo Dragon de Dos Cabezas",
-            Price = 2000M,
-            Size = 20.2M,
-            ExpireDate = new DateTime(2029, 10, 1)
-        }
-    };
 
-    public static Dildo[] GetDildos()
+    private readonly HttpClient httpClient;
+
+    public DildoClient(HttpClient httpClient)
     {
-        return dildos.ToArray();
+        this.httpClient = httpClient;
     }
 
-    public static void AddDildo(Dildo dildo)
+    public async Task<Dildo[]?> GetDildosAsync()
     {
-        dildo.Id = dildos.Max(dildo => dildo.Id) + 1;
-        dildos.Add(dildo);
+        return await httpClient.GetFromJsonAsync<Dildo []>("dildos");
     }
 
-    public static Dildo GetDildo(int id)
+    public async Task AddDildoAsync(Dildo dildo)
     {
-        return dildos.Find(dildo => dildo.Id == id) ?? 
-        throw new Exception("Could not find plush");
+        await httpClient.PostAsJsonAsync("dildos", dildo);
     }
 
-    public static void UpdateDildo (Dildo updatedDildo)
+    public async Task<Dildo> GetDildoAsync(int id)
     {
-        Dildo existingDildo = GetDildo(updatedDildo.Id);
-        existingDildo.Name = updatedDildo.Name;
-        existingDildo.Price = updatedDildo.Price;
-        existingDildo.Material = updatedDildo.Material;
-        existingDildo.Size = updatedDildo.Size;
-        existingDildo.ExpireDate = updatedDildo.ExpireDate;
-        existingDildo.Color = updatedDildo.Color;
-        existingDildo.Stock = updatedDildo.Stock;
+        return await httpClient.GetFromJsonAsync<Dildo>($"dildos/{id}") ?? 
+        throw new Exception("Could not find dildo");
     }
 
-    public static void DeleteDildo(int id)
+    public async Task UpdateDildoAsync(Dildo updatedDildo)
     {
-        Dildo dildo = GetDildo(id);
-        dildos.Remove(dildo);
+        await httpClient.PutAsJsonAsync($"dildos/{updatedDildo.Id}", updatedDildo);
+    }
+
+    public async Task DeleteDildoAsync(int id)
+    {
+        await httpClient.DeleteAsync($"dildos/{id}");
     }
 }

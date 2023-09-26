@@ -2,6 +2,7 @@
 @using Models;
 @using Data;
 @inject NavigationManager NavigationManager
+@inject DildoClient client
 <h1>Las Pollas Hermanas Catalog</h1>
 @if (dildos is null)
 {
@@ -9,7 +10,7 @@
 }
 else
 {
-    <DeleteDildo dildo="@currentDildo" OnClose="@OnDeleteModalClose">
+    <DeleteDildo dildo="@currentDildo" OnClose="@OnDeleteModalCloseAsync">
     </DeleteDildo>
     <div class="row mb-4">
         <div class="col-sm-6">
@@ -60,9 +61,9 @@ else
 {
     private Dildo[]? dildos;
     private Dildo? currentDildo;
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        dildos = DildoClient.GetDildos();
+        dildos = await client.GetDildosAsync();
     }
 
     private void CreateDildo()
@@ -75,12 +76,12 @@ else
         NavigationManager.NavigateTo($"/dildo/{id}");
     }
 
-    private void OnDeleteModalClose(bool accepted)
+    private async Task OnDeleteModalCloseAsync(bool accepted)
     {
         if (accepted)
         {
-            DildoClient.DeleteDildo(currentDildo!.Id);
-            dildos = DildoClient.GetDildos();
+            await client.DeleteDildoAsync(currentDildo.Id);
+            dildos = await client.GetDildoAsync();
         }
     }
 }
