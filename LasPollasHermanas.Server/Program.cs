@@ -45,6 +45,7 @@ builder.Services.AddCors(options => options.AddDefaultPolicy(
     .AllowAnyMethod();
 }));
 var connectionString = builder.Configuration.GetConnectionString("DildoStoreContext");
+builder.Services.AddSqlServer<DildoStoreContext>(connectionString);
 var app = builder.Build();
 app.UseCors();
 var dildoGroup = app.MapGroup("/dildos").WithParameterValidation();
