@@ -6,3 +6,4 @@ docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=$sa_password" -e "MSSQL_PID=
 
 #Setting the conn string in secret Manager
 $sa_password = "SA_PASSWORD_GOES_HERE"
+dotnet user-secrets set "ConnectionStrings:DildoContext" "Server=localhost; DataBase=DildoStore; User Id=sa; Password=$sa_password; TrustServerCertificate=True;"
