@@ -1,4 +1,5 @@
 using LasPollasHermanas.Server.Models;
+using Microsoft.EntityFrameworkCore;
 
 List<Dildo> dildos = new ()
     {
@@ -52,13 +53,13 @@ var dildoGroup = app.MapGroup("/dildos").WithParameterValidation();
 #region Entry Points Dildos
 // EndPoint
 // GET Dildos
-dildoGroup.MapGet("/", () => dildos);
+dildoGroup.MapGet("/", async (DildoStoreContext context) =>
+await context.Dildos.AsNoTracking().ToListAsync());
 
 // GET/Dildo/{id}
-dildoGroup.MapGet("/{id}", (int id) => 
+dildoGroup.MapGet("/{id}", async (int id, DildoStoreContext context) => 
 {
-    Dildo? dildo = dildos.Find(dildo => 
-    dildo.Id == id);
+    Dildo? dildo = await context.Dildos.FindAsync(id);
     if(dildo is null)
     {
         return Results.NotFound();
@@ -67,47 +68,47 @@ dildoGroup.MapGet("/{id}", (int id) =>
 });
 
 // POST/dildos
-dildoGroup.MapPost("/", (Dildo dildo) =>
+dildoGroup.MapPost("/", async (Dildo dildo, DildoStoreContext context) =>
 {
-    dildo.Id = dildos.Max(dildo => dildo.Id) + 1;
-    dildos.Add(dildo);
+    // TODO: Where the F this id comes?
+    context.Dildos.Add(dildo);
+    await context.SaveChangesAsync();
     return Results.CreatedAtRoute("GetDildo", 
     new {id = dildo.Id}, dildo);
 }).WithName("GetDildo");
 
 // PUT/dildos/{id}
-dildoGroup.MapPut("/{id}", (int id, Dildo updatedDildo) =>
+dildoGroup.MapPut("/{id}",async (int id, Dildo updatedDildo, DildoStoreContext context) =>
 {
-    Dildo? existingDildo = dildos.Find(dildo => dildo.Id == id);
+    Dildo? existingDildo = await context.Dildos.FindAsync(id);
     if(existingDildo is null)
     {
         updatedDildo.Id = id;
-        dildos.Add(updatedDildo);
+        context.Dildos.Add(updatedDildo);
+        await context.SaveChangesAsync();
         return Results.CreatedAtRoute("UpdateDildo",
         new {id = updatedDildo.Id}, updatedDildo);
     }
-    int indexDildo = dildos.FindIndex(dildo => dildo.Id == id);
-    updatedDildo.Id = id;
-    dildos[indexDildo] = updatedDildo;
-    // existingDildo.Name = updatedDildo.Name;
-    // existingDildo.Price = updatedDildo.Price;
-    // existingDildo.Size = updatedDildo.Size;
-    // existingDildo.ExpireDate = updatedDildo.ExpireDate;
-    // existingDildo.Material = updatedDildo.Material;
-    // existingDildo.Color = updatedDildo.Color;
-    // existingDildo.Stock = updatedDildo.Stock;
-     
+    existingDildo.Name = updatedDildo.Name;
+    existingDildo.Price = updatedDildo.Price;
+    existingDildo.Size = updatedDildo.Size;
+    existingDildo.ExpireDate = updatedDildo.ExpireDate;
+    existingDildo.Material = updatedDildo.Material;
+    existingDildo.Color = updatedDildo.Color;
+    existingDildo.Stock = updatedDildo.Stock;
+    await context.SaveChangesAsync();
     return Results.NoContent();
 });
 
-dildoGroup.MapDelete("/{id}", (int id) =>
+dildoGroup.MapDelete("/{id}", async (int id, DildoStoreContext context) =>
 {
-    Dildo? deletedDildo = dildos.Find(dildo => dildo.Id == id);
+    Dildo? deletedDildo = await context.Dildos.FindAsync(id);
     if(deletedDildo is null)
     {
         return Results.NotFound();
     }
-    dildos.Remove(deletedDildo);
+    context.Dildos.Remove(deletedDildo);
+    await context.SaveChangesAsync();
     return Results.NoContent();
 }
 );
