@@ -80,38 +80,27 @@ dildoGroup.MapPost("/", async (Dildo dildo, DildoStoreContext context) =>
 // PUT/dildos/{id}
 dildoGroup.MapPut("/{id}",async (int id, Dildo updatedDildo, DildoStoreContext context) =>
 {
-    Dildo? existingDildo = await context.Dildos.FindAsync(id);
-    if(existingDildo is null)
-    {
-        updatedDildo.Id = id;
-        context.Dildos.Add(updatedDildo);
-        await context.SaveChangesAsync();
-        return Results.CreatedAtRoute("UpdateDildo",
-        new {id = updatedDildo.Id}, updatedDildo);
-    }
-    existingDildo.Name = updatedDildo.Name;
-    existingDildo.Price = updatedDildo.Price;
-    existingDildo.Size = updatedDildo.Size;
-    existingDildo.ExpireDate = updatedDildo.ExpireDate;
-    existingDildo.Material = updatedDildo.Material;
-    existingDildo.Color = updatedDildo.Color;
-    existingDildo.Stock = updatedDildo.Stock;
-    await context.SaveChangesAsync();
-    return Results.NoContent();
+    var rowsAffected = await context.Dildos.Where(
+        dildo => dildo.Id == id)
+        .ExecuteUpdateAsync(updates =>
+        updates.SetProperty(dildo => dildo.Name, updatedDildo.Name)
+               .SetProperty(dildo => dildo.Price, updatedDildo.Price)
+               .SetProperty(dildo => dildo.Size, updatedDildo.Size)
+               .SetProperty(dildo => dildo.ExpireDate, updatedDildo.ExpireDate)
+               .SetProperty(dildo => dildo.Material, updatedDildo.Color)
+               .SetProperty(dildo => dildo.Color, updatedDildo.Color)
+               .SetProperty(dildo => dildo.Stock, updatedDildo.Stock));
+    
+    return rowsAffected == 0 ? Results.NotFound() : Results.NoContent();
 });
 
 dildoGroup.MapDelete("/{id}", async (int id, DildoStoreContext context) =>
 {
-    Dildo? deletedDildo = await context.Dildos.FindAsync(id);
-    if(deletedDildo is null)
-    {
-        return Results.NotFound();
-    }
-    context.Dildos.Remove(deletedDildo);
-    await context.SaveChangesAsync();
-    return Results.NoContent();
-}
-);
+    var rowsAffected = await context.Dildos.Where(
+        dildo => dildo.Id == id)
+        .ExecuteDeleteAsync();
+    return rowsAffected == 0 ? Results.NotFound() : Results.NoContent();
+});
 #endregion
 
 app.Run();

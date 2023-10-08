@@ -10,8 +10,8 @@ POST {{baseUrl}}/dildos
 content-type: application/json
 
 {
-    "name": "",
-    "price": 7000,
+    "name": "aaaa",
+    "price": 70,
     "size": 23.1,
     "expireDate": "2030-03-12T00:00:00",
     "material": null,
