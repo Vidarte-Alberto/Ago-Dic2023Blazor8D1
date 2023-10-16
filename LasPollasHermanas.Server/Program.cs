@@ -87,7 +87,7 @@ dildoGroup.MapPut("/{id}",async (int id, Dildo updatedDildo, DildoStoreContext c
                .SetProperty(dildo => dildo.Price, updatedDildo.Price)
                .SetProperty(dildo => dildo.Size, updatedDildo.Size)
                .SetProperty(dildo => dildo.ExpireDate, updatedDildo.ExpireDate)
-               .SetProperty(dildo => dildo.Material, updatedDildo.Color)
+               .SetProperty(dildo => dildo.Material, updatedDildo.Material)
                .SetProperty(dildo => dildo.Color, updatedDildo.Color)
                .SetProperty(dildo => dildo.Stock, updatedDildo.Stock));
     
