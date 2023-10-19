@@ -4,7 +4,7 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>e61e1a9d-ce73-4378-9550-0b975fd25f49</UserSecretsId>
+    <UserSecretsId>f771b20e-a210-4965-b561-743ddecd054b</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,6 +14,10 @@
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.11" />
     <PackageReference Include="MinimalApis.Extensions" Version="0.11.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LasPollasHermanas.Data\LasPollasHermanas.Data.csproj" />
   </ItemGroup>
 
 </Project>

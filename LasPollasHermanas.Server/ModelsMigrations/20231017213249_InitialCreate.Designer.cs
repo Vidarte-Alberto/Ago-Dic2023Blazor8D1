@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LasPollasHermanas.Server.ModelsMigrations
 {
     [DbContext(typeof(DildoStoreContext))]
-    [Migration("20231003160812_InitialCreate")]
+    [Migration("20231017213249_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

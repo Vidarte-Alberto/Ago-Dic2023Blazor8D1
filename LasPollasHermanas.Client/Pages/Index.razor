@@ -11,7 +11,13 @@
 else
 {
     <DeleteDildo dildo="@currentDildo" OnClose="@OnDeleteModalCloseAsync">
-    </DeleteDildo>
+</DeleteDildo>
+    <div class="input-group mb-4">
+        <div class="form-outline">
+            <input type="search" @bind-value="searchQuery" @oninput="SearchDildo" class="form-control mr-sm-2 mb-1"
+                placeholder="Search..." aria-label="Search" />
+        </div>
+    </div>
     <div class="row mb-4">
         <div class="col-sm-6">
             <button type="button" class="btn btn-primary" @onclick="CreateDildo">New Dildo</button>
@@ -31,7 +37,7 @@ else
         <th></th>
     </thead>
     <tbody>
-        @foreach (var dildo in dildos)
+        @foreach (var dildo in filteredDildos ?? dildos)
             {
                 <tr>
                     <td>@dildo.Id</td>
@@ -49,7 +55,7 @@ else
                     </td>
                     <td>
                         <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal"
-                        @onclick="(() => currentDildo = dildo)"> <i class="oi oi-x"></i></button>
+                            @onclick="(() => currentDildo = dildo)"> <i class="oi oi-x"></i></button>
                     </td>
                 </tr>
             }
@@ -61,6 +67,8 @@ else
 {
     private Dildo[]? dildos;
     private Dildo? currentDildo;
+    private string searchQuery = "";
+    private Dildo[]? filteredDildos;
     protected override async Task OnInitializedAsync()
     {
         dildos = await client.GetDildosAsync();
@@ -84,4 +92,15 @@ else
             dildos = await client.GetDildosAsync();
         }
     }
+
+    private async Task SearchDildo(ChangeEventArgs e)
+    {
+        await Task.Delay(200).ConfigureAwait(false);
+        searchQuery = e.Value?.ToString() ?? "";
+        filteredDildos = string.IsNullOrWhiteSpace(searchQuery)
+        ? dildos
+        : await client.SearchDildosAsync(searchQuery).ConfigureAwait(false);
+    }
+
+
 }

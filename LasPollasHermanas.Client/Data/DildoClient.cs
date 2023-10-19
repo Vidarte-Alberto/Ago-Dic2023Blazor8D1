@@ -22,7 +22,7 @@ public class DildoClient
 
     public async Task<Dildo> GetDildoAsync(int id)
     {
-        return await httpClient.GetFromJsonAsync<Dildo>($"dildos/{id}") ?? 
+        return await httpClient.GetFromJsonAsync<Dildo>($"dildos/{id}") ??
         throw new Exception("Could not find dildo");
     }
 
@@ -34,5 +34,10 @@ public class DildoClient
     public async Task DeleteDildoAsync(int id)
     {
         await httpClient.DeleteAsync($"dildos/{id}");
+    }
+
+    public async Task<Dildo[]?> SearchDildosAsync(string query)
+    {
+        return await httpClient.GetFromJsonAsync<Dildo[]>($"dildos/search/{query}");
     }
 }

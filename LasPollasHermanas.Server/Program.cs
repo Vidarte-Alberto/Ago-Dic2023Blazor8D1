@@ -1,9 +1,9 @@
 using LasPollasHermanas.Server.Models;
 using Microsoft.EntityFrameworkCore;
 
-List<Dildo> dildos = new ()
+List<Dildo> dildos = new()
     {
-        new Dildo () 
+        new Dildo ()
         {
             Id = 1,
             Name = "Dildo Hulk",
@@ -11,7 +11,7 @@ List<Dildo> dildos = new ()
             Size = 45.3M,
             ExpireDate = new DateTime(2026, 04, 23)
         },
-        new Dildo () 
+        new Dildo ()
         {
             Id = 2,
             Name = "Dildo De Amazon",
@@ -19,7 +19,7 @@ List<Dildo> dildos = new ()
             Size = 23.1M,
             ExpireDate = new DateTime(2030, 03, 12)
         },
-        new Dildo () 
+        new Dildo ()
         {
             Id = 3,
             Name = "Dildo Hydra",
@@ -27,7 +27,7 @@ List<Dildo> dildos = new ()
             Size = 10.1M,
             ExpireDate = new DateTime(2027, 06, 10)
         },
-        new Dildo () 
+        new Dildo ()
         {
             Id = 4,
             Name = "Dildo Dragon de Dos Cabezas",
@@ -41,10 +41,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddCors(options => options.AddDefaultPolicy(
     builder =>
     {
-    builder.WithOrigins("http://localhost:5289")
-    .AllowAnyHeader()
-    .AllowAnyMethod();
-}));
+        builder.WithOrigins("http://localhost:5289")
+        .AllowAnyHeader()
+        .AllowAnyMethod();
+    }));
 var connectionString = builder.Configuration.GetConnectionString("DildoStoreContext");
 builder.Services.AddSqlServer<DildoStoreContext>(connectionString);
 var app = builder.Build();
@@ -57,14 +57,30 @@ dildoGroup.MapGet("/", async (DildoStoreContext context) =>
 await context.Dildos.AsNoTracking().ToListAsync());
 
 // GET/Dildo/{id}
-dildoGroup.MapGet("/{id}", async (int id, DildoStoreContext context) => 
+dildoGroup.MapGet("/{id}", async (int id, DildoStoreContext context) =>
 {
     Dildo? dildo = await context.Dildos.FindAsync(id);
-    if(dildo is null)
+    if (dildo is null)
     {
         return Results.NotFound();
     }
     return Results.Ok(dildo);
+});
+
+// GET /Dildo/search/{query}
+dildoGroup.MapGet("/search/{query}", async (string query, DildoStoreContext context) =>
+{
+    // Dildo? dildo = await context.Dildos.FindAsync(id);
+    var dildos = await context.Dildos.Where(dildo => dildo.Name != null && dildo.Name.ToLower().Contains(query.ToLower())).ToListAsync();
+    // case insensitive search
+
+
+    if (dildos is null)
+    {
+        return Results.NotFound();
+    }
+
+    return Results.Ok(dildos);
 });
 
 // POST/dildos
@@ -73,12 +89,12 @@ dildoGroup.MapPost("/", async (Dildo dildo, DildoStoreContext context) =>
     // TODO: Where the F this id comes?
     context.Dildos.Add(dildo);
     await context.SaveChangesAsync();
-    return Results.CreatedAtRoute("GetDildo", 
-    new {id = dildo.Id}, dildo);
+    return Results.CreatedAtRoute("GetDildo",
+    new { id = dildo.Id }, dildo);
 }).WithName("GetDildo");
 
 // PUT/dildos/{id}
-dildoGroup.MapPut("/{id}",async (int id, Dildo updatedDildo, DildoStoreContext context) =>
+dildoGroup.MapPut("/{id}", async (int id, Dildo updatedDildo, DildoStoreContext context) =>
 {
     var rowsAffected = await context.Dildos.Where(
         dildo => dildo.Id == id)
@@ -90,7 +106,7 @@ dildoGroup.MapPut("/{id}",async (int id, Dildo updatedDildo, DildoStoreContext c
                .SetProperty(dildo => dildo.Material, updatedDildo.Material)
                .SetProperty(dildo => dildo.Color, updatedDildo.Color)
                .SetProperty(dildo => dildo.Stock, updatedDildo.Stock));
-    
+
     return rowsAffected == 0 ? Results.NotFound() : Results.NoContent();
 });
 
