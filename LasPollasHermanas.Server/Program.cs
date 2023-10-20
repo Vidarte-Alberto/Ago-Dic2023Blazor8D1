@@ -71,8 +71,17 @@ dildoGroup.MapGet("/{id}", async (int id, DildoStoreContext context) =>
 dildoGroup.MapGet("/search/{query}", async (string query, DildoStoreContext context) =>
 {
     // Dildo? dildo = await context.Dildos.FindAsync(id);
-    var dildos = await context.Dildos.Where(dildo => dildo.Name != null && dildo.Name.ToLower().Contains(query.ToLower())).ToListAsync();
-    // case insensitive search
+    var dildos = await context.Dildos
+        .Where(dildo =>
+            dildo.Name != null && dildo.Name.ToLower().Contains(query.ToLower()) ||
+            dildo.Color != null && dildo.Color.ToLower().Contains(query.ToLower()) ||
+            dildo.Material != null && dildo.Material.ToLower().Contains(query.ToLower()) ||
+            dildo.Size.ToString().Contains(query) ||
+            dildo.Price.ToString().Contains(query) ||
+            dildo.ExpireDate.ToString().Contains(query) ||
+            dildo.Stock.ToString().Contains(query))
+        .ToListAsync();
+
 
 
     if (dildos is null)
